@@ -1,0 +1,81 @@
+<div class="sidebar" ng-class="{'visible': sidebarVisible}">
+    <div class="sidebar-header">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-cube"></i>
+            </div>
+            <span class="logo-text">cofactr</span>
+        </div>
+        <button class="sidebar-close-btn" ng-click="closeSidebar()" ng-if="isMobile">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" 
+               placeholder="Search...." 
+               class="search-input"
+               ng-model="searchQuery"
+               ng-change="onSearch(searchQuery)">
+    </div>
+    
+    <nav class="nav-menu">
+        <a href="#/dashboard" 
+           class="nav-item" 
+           ng-class="{'active': isActive('/dashboard')}"
+           ng-click="setActiveItem('/dashboard')">
+            <i class="fas fa-th-large"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="#/inventory" 
+           class="nav-item"
+           ng-class="{'active': isActive('/inventory')}"
+           ng-click="setActiveItem('/inventory')">
+            <i class="fas fa-box"></i>
+            <span>Inventory</span>
+        </a>
+        <a href="#/production" 
+           class="nav-item"
+           ng-class="{'active': isActive('/production')}"
+           ng-click="setActiveItem('/production')">
+            <i class="fas fa-industry"></i>
+            <span>Production</span>
+        </a>
+        <a href="#/orders" 
+           class="nav-item"
+           ng-class="{'active': isActive('/orders')}"
+           ng-click="setActiveItem('/orders')">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Orders</span>
+        </a>
+        <a href="#/reports" 
+           class="nav-item"
+           ng-class="{'active': isActive('/reports')}"
+           ng-click="setActiveItem('/reports')">
+            <i class="fas fa-chart-bar"></i>
+            <span>Reports</span>
+        </a>
+        <a href="#/user-access" 
+           class="nav-item"
+           ng-class="{'active': isActive('/user-access')}"
+           ng-click="setActiveItem('/user-access')">
+            <i class="fas fa-users"></i>
+            <span>User Access</span>
+        </a>
+        <a href="#/support" 
+           class="nav-item"
+           ng-class="{'active': isActive('/support')}"
+           ng-click="setActiveItem('/support')">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>Support</span>
+        </a>
+        <a href="#/settings" 
+           class="nav-item"
+           ng-class="{'active': isActive('/settings')}"
+           ng-click="setActiveItem('/settings')">
+            <i class="fas fa-cog"></i>
+            <span>Setting</span>
+        </a>
+    </nav>
+</div>

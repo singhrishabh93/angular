@@ -1,0 +1,46 @@
+<header class="header">
+    <div class="header-left">
+        <button class="mobile-menu-btn" ng-click="toggleSidebar()" ng-if="isMobile">
+            <i class="fas" ng-class="sidebarVisible ? 'fa-times' : 'fa-bars'"></i>
+        </button>
+        <div class="page-title" ng-if="pageTitle">{{pageTitle}}</div>
+    </div>
+    
+    <div class="header-right">
+        <div class="notification-icon" ng-click="openMessages()" title="Messages">
+            <i class="fas fa-envelope"></i>
+            <span class="badge badge-green" ng-if="messageCount > 0">{{messageCount}}</span>
+        </div>
+        
+        <div class="notification-icon" ng-click="openNotifications()" title="Notifications">
+            <i class="fas fa-bell"></i>
+            <span class="badge badge-orange" ng-if="notificationCount > 0">{{notificationCount}}</span>
+        </div>
+        
+        <div class="user-profile" ng-click="toggleUserMenu()">
+            <img ng-src="{{userProfile.image}}" 
+                 alt="{{userProfile.name}}" 
+                 class="profile-img"
+                 ng-if="userProfile.image">
+            <div class="profile-placeholder" ng-if="!userProfile.image">
+                <i class="fas fa-user"></i>
+            </div>
+            
+            <!-- User dropdown menu -->
+            <div class="user-dropdown" ng-show="showUserMenu">
+                <div class="dropdown-item" ng-click="viewProfile()">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </div>
+                <div class="dropdown-item" ng-click="openSettings()">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+                <div class="dropdown-item" ng-click="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

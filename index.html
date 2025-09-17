@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="cofactrApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cofactr - Orders Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+</head>
+<body>
+    <div class="app-container" ng-controller="AppController">
+        <!-- Sidebar Component -->
+        <div ng-include="'components/sidebar/sidebar.html'" ng-controller="SidebarController"></div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header Component -->
+            <div ng-include="'components/header/header.html'" ng-controller="HeaderController"></div>
+            
+            <!-- Page Content -->
+            <div class="page-content" ng-view></div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+    <script src="components/sidebar/sidebar.js"></script>
+    <script src="components/header/header.js"></script>
+    <script src="orders/orders.js"></script>
+</body>
+</html>

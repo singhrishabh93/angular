@@ -1,0 +1,20 @@
+{
+  "name": "cofactr-orders-dashboard",
+  "version": "1.0.0",
+  "description": "Orders management dashboard for Cofactr",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server -p 8080 -c-1",
+    "build": "echo 'Build completed'",
+    "test": "echo 'No tests specified'"
+  },
+  "dependencies": {
+    "angular": "^1.8.2",
+    "angular-route": "^1.8.2",
+    "http-server": "^14.1.1"
+  },
+  "devDependencies": {},
+  "keywords": ["angular", "dashboard", "orders", "management"],
+  "author": "",
+  "license": "MIT"
+}

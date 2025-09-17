@@ -1,0 +1,95 @@
+<div class="orders-container">
+    <h1 class="page-title">Orders</h1>
+    
+    <div class="orders-header">
+        <div class="status-tabs">
+            <button class="status-tab active" ng-click="setActiveTab('all')">
+                All orders
+                <span class="status-count">{{getOrderCount('all')}}</span>
+            </button>
+            <button class="status-tab" ng-click="setActiveTab('active')">
+                Active orders
+                <span class="status-count">{{getOrderCount('active')}}</span>
+            </button>
+            <button class="status-tab" ng-click="setActiveTab('pending')">
+                Pending orders
+                <span class="status-count">{{getOrderCount('pending')}}</span>
+            </button>
+            <button class="status-tab" ng-click="setActiveTab('cancelled')">
+                Cancelled orders
+                <span class="status-count">{{getOrderCount('cancelled')}}</span>
+            </button>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                Add Order
+            </button>
+            <button class="btn btn-secondary">
+                <i class="fas fa-file-export"></i>
+                Export
+            </button>
+            <button class="btn btn-secondary">
+                <i class="fas fa-filter"></i>
+                Filter
+            </button>
+        </div>
+    </div>
+    
+    <div class="table-wrapper">
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" class="checkbox"></th>
+                    <th>Product items</th>
+                    <th>Items no.</th>
+                    <th>Incoming</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Paid</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="order in filteredOrders">
+                    <td><input type="checkbox" class="checkbox"></td>
+                    <td>{{order.product}}</td>
+                    <td>{{order.itemNo}}</td>
+                    <td>{{order.incoming}}</td>
+                    <td>{{order.category}}</td>
+                    <td>{{order.date}}</td>
+                    <td>{{order.quantity}}</td>
+                    <td>${{order.price | number:2}}</td>
+                    <td>
+                        <span class="status-badge" ng-class="order.paid ? 'status-paid' : 'status-unpaid'">
+                            <i class="fas" ng-class="order.paid ? 'fa-check' : 'fa-minus'"></i>
+                        </span>
+                    </td>
+                    <td>
+                        <button class="action-btn" ng-class="getActionClass(order.status)" ng-click="handleAction(order)">
+                            {{getActionText(order.status)}}
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="pagination">
+        <button ng-click="previousPage()" ng-disabled="currentPage === 1">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button ng-repeat="page in getPageNumbers()" 
+                ng-class="{'active': page === currentPage}" 
+                ng-click="goToPage(page)"
+                ng-if="page !== '...'">
+            {{page}}
+        </button>
+        <button ng-click="nextPage()" ng-disabled="currentPage === totalPages">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+</div>
