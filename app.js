@@ -57,7 +57,10 @@ angular.module('cofactrApp', ['ngRoute'])
             }
         });
     })
-    .config(function($routeProvider) {
+    .config(function($routeProvider, $locationProvider) {
+        // Configure hash prefix to use single # instead of #!
+        $locationProvider.hashPrefix('');
+        
         $routeProvider
             .when('/orders', {
                 templateUrl: 'orders/orders.html',
@@ -68,7 +71,8 @@ angular.module('cofactrApp', ['ngRoute'])
                 controller: 'DashboardController'
             })
             .when('/inventory', {
-                template: '<div class="page-content"><h1>Inventory</h1><p>Inventory content goes here</p></div>'
+                templateUrl: 'inventory/inventory.html',
+                controller: 'InventoryController'
             })
             .when('/production', {
                 template: '<div class="page-content"><h1>Production</h1><p>Production content goes here</p></div>'
@@ -86,6 +90,6 @@ angular.module('cofactrApp', ['ngRoute'])
                 template: '<div class="page-content"><h1>Settings</h1><p>Settings content goes here</p></div>'
             })
             .otherwise({
-                redirectTo: '/orders'
+                redirectTo: '/dashboard'
             });
     });

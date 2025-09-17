@@ -1,0 +1,195 @@
+<div class="inventory-container">
+    <h1 class="page-title">Inventory Management</h1>
+    
+    <!-- Inventory Header -->
+    <div class="inventory-header">
+        <div class="search-filters">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" 
+                       placeholder="Search products..." 
+                       ng-model="searchQuery"
+                       ng-change="filterProducts()"
+                       class="search-input">
+            </div>
+            
+            <div class="filter-dropdown">
+                <select ng-model="selectedCategory" ng-change="filterProducts()" class="filter-select">
+                    <option value="">All Categories</option>
+                    <option ng-repeat="category in categories" value="{{category}}">{{category}}</option>
+                </select>
+            </div>
+            
+            <div class="sort-dropdown">
+                <select ng-model="sortBy" ng-change="sortProducts()" class="sort-select">
+                    <option value="name">Sort by Name</option>
+                    <option value="price">Sort by Price</option>
+                    <option value="category">Sort by Category</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary" ng-click="addProduct()">
+                <i class="fas fa-plus"></i>
+                Add Product
+            </button>
+            <button class="btn btn-secondary" ng-click="exportInventory()">
+                <i class="fas fa-file-export"></i>
+                Export
+            </button>
+            <button class="btn btn-secondary" ng-click="toggleView()">
+                <i class="fas" ng-class="viewMode === 'grid' ? 'fa-list' : 'fa-th'"></i>
+                {{viewMode === 'grid' ? 'List View' : 'Grid View'}}
+            </button>
+        </div>
+    </div>
+    
+    <!-- Inventory Stats -->
+    <div class="inventory-stats">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-box"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{filteredProducts.length}}</h3>
+                <p>Total Products</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-tags"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{categories.length}}</h3>
+                <p>Categories</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-content">
+                <h3>${{totalInventoryValue | number:2}}</h3>
+                <p>Total Value</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-content">
+                <h3>${{averagePrice | number:2}}</h3>
+                <p>Average Price</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Products Grid/List View -->
+    <div class="products-section" ng-class="'view-' + viewMode">
+        <div ng-if="viewMode === 'grid'" class="products-grid">
+            <div class="product-card" ng-repeat="product in filteredProducts">
+                <div class="product-image">
+                    <img ng-src="{{product.ImageURL}}" 
+                         alt="{{product.name}}" 
+                         onerror="this.src='https://via.placeholder.com/200x200?text=No+Image'">
+                    <div class="product-overlay">
+                        <button class="btn-icon" ng-click="editProduct(product)" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon" ng-click="deleteProduct(product)" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn-icon" ng-click="viewProduct(product)" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h4 class="product-name">{{product.name}}</h4>
+                    <p class="product-category">{{product.Category}}</p>
+                    <p class="product-description">{{product.Description}}</p>
+                    <div class="product-price">${{product.Price | number:2}}</div>
+                    <div class="product-actions">
+                        <button class="btn btn-sm btn-primary" ng-click="updateStock(product)">
+                            <i class="fas fa-warehouse"></i>
+                            Update Stock
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div ng-if="viewMode === 'list'" class="products-list">
+            <div class="list-header">
+                <div class="list-column">Product</div>
+                <div class="list-column">Category</div>
+                <div class="list-column">Price</div>
+                <div class="list-column">Description</div>
+                <div class="list-column">Actions</div>
+            </div>
+            <div class="list-item" ng-repeat="product in filteredProducts">
+                <div class="list-cell product-cell">
+                    <div class="product-thumb">
+                        <img ng-src="{{product.ImageURL}}" 
+                             alt="{{product.name}}" 
+                             onerror="this.src='https://via.placeholder.com/50x50?text=No+Image'">
+                    </div>
+                    <div class="product-details">
+                        <h5>{{product.name}}</h5>
+                        <small>ID: {{product.id}}</small>
+                    </div>
+                </div>
+                <div class="list-cell">
+                    <span class="category-badge">{{product.Category}}</span>
+                </div>
+                <div class="list-cell">
+                    <span class="price">${{product.Price | number:2}}</span>
+                </div>
+                <div class="list-cell">
+                    <span class="description">{{product.Description}}</span>
+                </div>
+                <div class="list-cell">
+                    <div class="action-buttons">
+                        <button class="btn-icon" ng-click="editProduct(product)" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon" ng-click="deleteProduct(product)" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn-icon" ng-click="viewProduct(product)" title="View">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="pagination" ng-if="totalPages > 1">
+        <button ng-click="previousPage()" ng-disabled="currentPage === 1">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button ng-repeat="page in getPageNumbers()" 
+                ng-class="{'active': page === currentPage}" 
+                ng-click="goToPage(page)"
+                ng-if="page !== '...'">
+            {{page}}
+        </button>
+        <button ng-click="nextPage()" ng-disabled="currentPage === totalPages">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+    
+    <!-- Category Distribution Chart -->
+    <div class="category-chart">
+        <h3>Products by Category</h3>
+        <div class="chart-container">
+            <canvas id="categoryChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+</div>

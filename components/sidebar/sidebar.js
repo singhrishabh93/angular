@@ -3,13 +3,13 @@ angular.module('cofactrApp')
     .controller('SidebarController', function($scope, $location, $rootScope) {
         
         // Initialize active item based on current route
-        $scope.activeItem = $location.path() || '/orders';
+        $scope.activeItem = $location.path() || '/dashboard';
         $scope.sidebarVisible = false; // Start closed on mobile
         $scope.isMobile = window.innerWidth <= 768;
         
         // Ensure active state is properly set on initialization
         if (!$scope.activeItem || $scope.activeItem === '/') {
-            $scope.activeItem = '/orders';
+            $scope.activeItem = '/dashboard';
         }
         
         // Listen for sidebar toggle events
@@ -27,6 +27,8 @@ angular.module('cofactrApp')
         $scope.setActiveItem = function(path) {
             $scope.activeItem = path;
             $location.path(path);
+            // Force route change
+            $scope.$apply();
         };
         
         // Check if current path is active
@@ -46,6 +48,7 @@ angular.module('cofactrApp')
         // Listen for route changes to update active state
         $scope.$on('$routeChangeSuccess', function() {
             $scope.activeItem = $location.path();
+            console.log('Route changed to:', $scope.activeItem);
             // Force digest cycle to update the view
             $scope.$apply();
         });
