@@ -13,8 +13,8 @@ angular.module('cofactrApp')
         // User profile data
         $scope.userProfile = {
             name: 'John Doe',
-            email: 'john.doe@cofactr.com',
-            image: 'https://via.placeholder.com/40x40/4CAF50/FFFFFF?text=U',
+            email: 'john.doe@matrix.shop',
+            image: null, // This will use the person.svg placeholder
             role: 'Administrator'
         };
         
