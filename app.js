@@ -64,7 +64,8 @@ angular.module('cofactrApp', ['ngRoute'])
                 controller: 'OrdersController'
             })
             .when('/dashboard', {
-                template: '<div class="page-content"><h1>Dashboard</h1><p>Dashboard content goes here</p></div>'
+                templateUrl: 'dashboard/dashboard.html',
+                controller: 'DashboardController'
             })
             .when('/inventory', {
                 template: '<div class="page-content"><h1>Inventory</h1><p>Inventory content goes here</p></div>'
