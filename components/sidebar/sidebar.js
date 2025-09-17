@@ -7,6 +7,11 @@ angular.module('cofactrApp')
         $scope.sidebarVisible = false; // Start closed on mobile
         $scope.isMobile = window.innerWidth <= 768;
         
+        // Ensure active state is properly set on initialization
+        if (!$scope.activeItem || $scope.activeItem === '/') {
+            $scope.activeItem = '/orders';
+        }
+        
         // Listen for sidebar toggle events
         $rootScope.$on('toggleSidebar', function(event, visible) {
             $scope.sidebarVisible = visible !== undefined ? visible : !$scope.sidebarVisible;
@@ -26,7 +31,8 @@ angular.module('cofactrApp')
         
         // Check if current path is active
         $scope.isActive = function(path) {
-            return $scope.activeItem === path || $location.path() === path;
+            var currentPath = $location.path();
+            return $scope.activeItem === path || currentPath === path;
         };
         
         // Handle search functionality
@@ -40,6 +46,8 @@ angular.module('cofactrApp')
         // Listen for route changes to update active state
         $scope.$on('$routeChangeSuccess', function() {
             $scope.activeItem = $location.path();
+            // Force digest cycle to update the view
+            $scope.$apply();
         });
         
         // Menu items configuration
