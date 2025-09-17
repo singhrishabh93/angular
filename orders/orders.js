@@ -1,86 +1,74 @@
 // Orders Controller
 angular.module('cofactrApp')
-    .controller('OrdersController', function($scope) {
-        // Sample data matching the image
-        $scope.orders = [
-            {
-                product: 'Shirt',
-                itemNo: 'HK4886',
-                incoming: 14,
-                category: 'Molasses',
-                date: '12 Feb 2024',
-                quantity: 240,
-                price: 8542.82,
-                paid: true,
-                status: 'view'
-            },
-            {
-                product: 'Notebook',
-                itemNo: 'HK4886',
-                incoming: 12,
-                category: 'Shirt',
-                date: '12 Feb 2024',
-                quantity: 140,
-                price: 8542.82,
-                paid: true,
-                status: 'view'
-            },
-            {
-                product: 'Laptop',
-                itemNo: 'HK4886',
-                incoming: 16,
-                category: 'Notebook',
-                date: '12 Feb 2024',
-                quantity: 340,
-                price: 8542.82,
-                paid: false,
-                status: 'cancelled'
-            },
-            {
-                product: 'Carrots',
-                itemNo: 'HK4886',
-                incoming: 10,
-                category: 'Carrots',
-                date: '12 Feb 2024',
-                quantity: 24,
-                price: 8542.82,
-                paid: true,
-                status: 'ship'
-            },
-            {
-                product: 'Oatmeal',
-                itemNo: 'HK4886',
-                incoming: 19,
-                category: 'Honey',
-                date: '12 Feb 2024',
-                quantity: 140,
-                price: 8542.82,
-                paid: true,
-                status: 'view'
-            },
-            {
-                product: 'Honey',
-                itemNo: 'HK4886',
-                incoming: 18,
-                category: 'Yeast',
-                date: '12 Feb 2024',
-                quantity: 240,
-                price: 8542.82,
-                paid: true,
-                status: 'ship'
-            },
-            {
-                product: 'Molasses',
-                itemNo: 'HK4886',
-                incoming: 12,
-                category: 'Laptop',
-                date: '12 Feb 2024',
-                quantity: 340,
-                price: 8542.82,
-                paid: true,
-                status: 'pending'
+    .controller('OrdersController', function($scope, $http) {
+        // Load data from db.json
+        $scope.orders = [];
+        $scope.products = [];
+        $scope.users = [];
+        
+        // Load data from db.json
+        $http.get('db/db.json').then(function(response) {
+            $scope.products = response.data.ProductsList || [];
+            $scope.users = response.data.users || [];
+            
+            // Transform OrdersList data to match the table structure
+            $scope.orders = (response.data.OrdersList || []).map(function(order) {
+                // Get product details for the first product in the order
+                var firstProduct = order.products && order.products[0];
+                var productDetails = $scope.products.find(function(p) {
+                    return p.id === firstProduct.productId;
+                }) || {};
+                
+                // Calculate total quantity
+                var totalQuantity = order.products.reduce(function(sum, p) {
+                    return sum + (p.quantity || 0);
+                }, 0);
+                
+                // Format date
+                var orderDate = new Date(order.orderDate);
+                var formattedDate = orderDate.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+                
+                return {
+                    id: order.id,
+                    product: productDetails.name || 'Unknown Product',
+                    itemNo: order.id,
+                    incoming: Math.floor(Math.random() * 20) + 5, // Random incoming value
+                    category: productDetails.Category || 'Unknown',
+                    date: formattedDate,
+                    quantity: totalQuantity,
+                    price: order.totalPrice,
+                    paid: order.paymentStatus === 'Paid',
+                    status: getStatusFromOrderStatus(order.orderStatus),
+                    orderStatus: order.orderStatus,
+                    paymentStatus: order.paymentStatus,
+                    shippingAddress: order.ShippingAddress,
+                    userId: order.userId
+                };
+            });
+            
+            // Initialize filtered orders
+            $scope.filteredOrders = $scope.orders;
+            filterOrders();
+        }).catch(function(error) {
+            console.error('Error loading data:', error);
+            $scope.orders = [];
+            $scope.filteredOrders = [];
+        });
+        
+        // Helper function to map order status to action status
+        function getStatusFromOrderStatus(orderStatus) {
+            switch(orderStatus) {
+                case 'Delivered': return 'view';
+                case 'Shipped': return 'ship';
+                case 'Processing': return 'pending';
+                case 'Confirmed': return 'view';
+                default: return 'view';
             }
-        ];
+        }
         
         $scope.activeTab = 'all';
         $scope.currentPage = 1;

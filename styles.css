@@ -382,6 +382,9 @@ body {
     font-size: 12px;
     font-weight: 500;
     transition: all 0.2s ease;
+    min-width: 120px;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .action-btn.view {
@@ -836,6 +839,7 @@ body {
     .action-btn {
         padding: 4px 8px;
         font-size: 10px;
+        min-width: 100px;
     }
     
     .pagination {
@@ -927,6 +931,7 @@ body {
     .action-btn {
         padding: 3px 6px;
         font-size: 9px;
+        min-width: 80px;
     }
     
     .pagination {
@@ -1005,6 +1010,7 @@ body {
     .action-btn {
         padding: 2px 4px;
         font-size: 8px;
+        min-width: 70px;
     }
 }
 

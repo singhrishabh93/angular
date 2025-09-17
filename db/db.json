@@ -1,0 +1,202 @@
+{
+    "ProductsList": [
+      {
+        "id": "101",
+        "name": "Nike T-shirt",
+        "Price": 100,
+        "Category": "T-shirts",
+        "Description": "Very beautiful T-shirt",
+        "ImageURL": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQzUT7Y_DUcvjUhbncSdKB9IpLaO_M_kswYBqojdD91QBCjwhQ9TJ9cOtbr7QT4Tuv2ytc85DG1WiBp8Vg5s7r56O73Vq2aXCRFqZ17gYqcMcuYoRQzKeOK"
+      },
+      {
+        "id": "102",
+        "name": "Adidas Sneakers",
+        "Price": 250,
+        "Category": "Footwear",
+        "Description": "Comfortable and stylish sneakers",
+        "ImageURL": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcS9Hf0BD92k-xzL578re-85RmBCx9EOE0WKTrzsQx8oJIu7hlb-nMQ_dDuYAVVHVqWhxmwGZLKftD2GPv2LuTDWAtOkBiDf8xvQ43l4V4kCIF50-ygWAxP7"
+      },
+      {
+        "id": "103",
+        "name": "Apple Watch Series 8",
+        "Price": 399,
+        "Category": "Electronics",
+        "Description": "Smartwatch with fitness tracking and notifications",
+        "ImageURL": "https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "id": "104",
+        "name": "Leather Wallet",
+        "Price": 75,
+        "Category": "Accessories",
+        "Description": "Premium leather wallet with RFID protection",
+        "ImageURL": "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcTnijmewQRtee6H-c_pqtONSOgQ26fhxuKJhcJFFdBK_IcBXoEPA8mq0UA38O1QridvFswtbbQlTqJYUnVoddB5UMMQy3mq_Mp6LDIq7iQ"
+      },
+      {
+        "id": "105",
+        "name": "Sony Headphones",
+        "Price": 199,
+        "Category": "Electronics",
+        "Description": "Noise-cancelling over-ear headphones",
+        "ImageURL": "https://sony.scene7.com/is/image/sonyglobalsolutions/Headphones-primary%20tout-mobile-1534x1083?$toutMobile$&fmt=png-alpha"
+      },
+      {
+        "id": "106",
+        "name": "Puma Running Shorts",
+        "Price": 45,
+        "Category": "Sportswear",
+        "Description": "Lightweight and breathable running shorts",
+        "ImageURL": "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/521351/01/fnd/IND/fmt/png/Run-Fav-2-In-1-Men's-Running-Shorts"
+      }
+    ],
+    "cartItems": [
+      {
+        "id": "201",
+        "Productid": "101",
+        "Quantity": 2,
+        "TotalPrice": 1798
+      },
+      {
+        "id": "202",
+        "Productid": "102",
+        "Quantity": 3,
+        "TotalPrice": 597
+      }
+    ],
+    "OrdersList": [
+      {
+        "id": "5004",
+        "userId": "204",
+        "products": [
+          {
+            "productId": "106",
+            "quantity": 3
+          }
+        ],
+        "totalPrice": 135,
+        "orderDate": "2025-09-14",
+        "ShippingAddress": "22 Nehru Street, Coimbatore",
+        "orderStatus": "Delivered",
+        "paymentStatus": "Pending",
+        "paymentId": "zz11"
+      },
+      {
+        "id": "5005",
+        "userId": "205",
+        "products": [
+          {
+            "productId": "101",
+            "quantity": 1
+          },
+          {
+            "productId": "102",
+            "quantity": 2
+          }
+        ],
+        "totalPrice": 600,
+        "orderDate": "2025-09-15",
+        "ShippingAddress": "88 Brigade Road, Bengaluru",
+        "orderStatus": "Confirmed",
+        "paymentStatus": "Paid",
+        "paymentId": "yy22"
+      },
+      {
+        "id": "5006",
+        "userId": "206",
+        "products": [
+          {
+            "productId": "103",
+            "quantity": 1
+          }
+        ],
+        "totalPrice": 399,
+        "orderDate": "2025-09-15",
+        "ShippingAddress": "12 Residency Road, Mumbai",
+        "orderStatus": "Delivered",
+        "paymentStatus": "Paid",
+        "paymentId": "xx33"
+      },
+      {
+        "id": "5007",
+        "userId": "201",
+        "products": [
+          {
+            "productId": "105",
+            "quantity": 2
+          },
+          {
+            "productId": "104",
+            "quantity": 1
+          }
+        ],
+        "totalPrice": 473,
+        "orderDate": "2025-09-16",
+        "ShippingAddress": "5 Park Street, Kolkata",
+        "orderStatus": "Shipped",
+        "paymentStatus": "Paid",
+        "paymentId": "ww44"
+      },
+      {
+        "id": "5008",
+        "userId": "205",
+        "products": [
+          {
+            "productId": "102",
+            "quantity": 1
+          },
+          {
+            "productId": "106",
+            "quantity": 1
+          }
+        ],
+        "totalPrice": 295,
+        "orderDate": "2025-09-16",
+        "ShippingAddress": "9 Anna Nagar, Chennai",
+        "orderStatus": "Processing",
+        "paymentStatus": "Pending",
+        "paymentId": "vv55"
+      }
+    ],
+    "users": [
+      {
+        "id": "201",
+        "Name": "Aarav Mehta",
+        "Email": "aarav.mehta@example.com",
+        "Password": "hashed_password_201",
+        "ShippingAddress": "Mumbai, Maharashtra",
+        "PaymentDetails": "Visa **** 3210"
+      },
+      {
+        "id": "202",
+        "Name": "Isha Reddy",
+        "Email": "isha.reddy@example.com",
+        "Password": "hashed_password_202",
+        "ShippingAddress": "Hyderabad, Telangana",
+        "PaymentDetails": "Mastercard **** 4567"
+      },
+      {
+        "id": "203",
+        "Name": "Rohan Kapoor",
+        "Email": "rohan.kapoor@example.com",
+        "Password": "hashed_password_203",
+        "ShippingAddress": "Delhi, NCR",
+        "PaymentDetails": "UPI ID: rohan@upi"
+      },
+      {
+        "id": "204",
+        "Name": "Sneha Nair",
+        "Email": "sneha.nair@example.com",
+        "Password": "hashed_password_204",
+        "ShippingAddress": "Kochi, Kerala",
+        "PaymentDetails": "Visa **** 7890"
+      },
+      {
+        "id": "205",
+        "Name": "Yash Verma",
+        "Email": "yash.verma@example.com",
+        "Password": "hashed_password_205",
+        "ShippingAddress": "Pune, Maharashtra",
+        "PaymentDetails": "Paytm Wallet: yashv123"
+      }
+    ]
+  }
