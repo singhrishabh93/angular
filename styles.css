@@ -233,6 +233,7 @@ body {
 .status-tabs {
     display: flex;
     gap: 20px;
+    position: relative;
 }
 
 .status-tab {
@@ -245,14 +246,23 @@ body {
     cursor: pointer;
     font-size: 14px;
     color: #666;
-    border-bottom: 2px solid transparent;
     transition: all 0.2s ease;
+    position: relative;
 }
 
 .status-tab.active {
     color: #333;
-    border-bottom-color: #4CAF50;
     font-weight: 500;
+}
+
+.tab-indicator {
+    position: absolute;
+    bottom: 0;
+    height: 2px;
+    background-color: #4CAF50;
+    transition: all 0.3s ease;
+    border-radius: 1px;
+    z-index: 1;
 }
 
 .status-count {
@@ -704,6 +714,10 @@ body {
         min-width: 120px;
         text-align: center;
         font-size: 13px;
+    }
+    
+    .tab-indicator {
+        height: 3px;
     }
     
     .action-buttons {

@@ -3,22 +3,23 @@
     
     <div class="orders-header">
         <div class="status-tabs">
-            <button class="status-tab active" ng-click="setActiveTab('all')">
+            <button class="status-tab" ng-class="{'active': activeTab === 'all'}" ng-click="setActiveTab('all')">
                 All orders
                 <span class="status-count">{{getOrderCount('all')}}</span>
             </button>
-            <button class="status-tab" ng-click="setActiveTab('active')">
+            <button class="status-tab" ng-class="{'active': activeTab === 'active'}" ng-click="setActiveTab('active')">
                 Active orders
                 <span class="status-count">{{getOrderCount('active')}}</span>
             </button>
-            <button class="status-tab" ng-click="setActiveTab('pending')">
+            <button class="status-tab" ng-class="{'active': activeTab === 'pending'}" ng-click="setActiveTab('pending')">
                 Pending orders
                 <span class="status-count">{{getOrderCount('pending')}}</span>
             </button>
-            <button class="status-tab" ng-click="setActiveTab('cancelled')">
+            <button class="status-tab" ng-class="{'active': activeTab === 'cancelled'}" ng-click="setActiveTab('cancelled')">
                 Cancelled orders
                 <span class="status-count">{{getOrderCount('cancelled')}}</span>
             </button>
+            <div class="tab-indicator" ng-style="getIndicatorStyle()"></div>
         </div>
         
         <div class="action-buttons">

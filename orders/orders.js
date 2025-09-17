@@ -93,6 +93,44 @@ angular.module('cofactrApp')
             $scope.activeTab = tab;
             $scope.currentPage = 1;
             filterOrders();
+            
+            // Update indicator position after DOM update
+            setTimeout(function() {
+                $scope.$apply();
+            }, 0);
+        };
+        
+        $scope.getIndicatorStyle = function() {
+            var tabIndex = 0;
+            var tabWidth = 0;
+            var tabLeft = 0;
+            
+            // Calculate which tab is active and its position
+            var tabs = ['all', 'active', 'pending', 'cancelled'];
+            tabIndex = tabs.indexOf($scope.activeTab);
+            
+            // Get the tab elements to calculate position and width
+            var tabElements = document.querySelectorAll('.status-tab');
+            if (tabElements && tabElements[tabIndex]) {
+                var tabElement = tabElements[tabIndex];
+                var tabsContainer = document.querySelector('.status-tabs');
+                var containerRect = tabsContainer.getBoundingClientRect();
+                var tabRect = tabElement.getBoundingClientRect();
+                
+                tabLeft = tabRect.left - containerRect.left;
+                tabWidth = tabRect.width;
+            } else {
+                // Fallback calculation if elements aren't available yet
+                var gap = 20; // gap between tabs
+                var baseWidth = 120; // approximate tab width
+                tabLeft = tabIndex * (baseWidth + gap);
+                tabWidth = baseWidth;
+            }
+            
+            return {
+                'left': tabLeft + 'px',
+                'width': tabWidth + 'px'
+            };
         };
         
         function filterOrders() {
@@ -204,6 +242,11 @@ angular.module('cofactrApp')
                 $scope.currentPage++;
             }
         };
+        
+        // Handle window resize to update indicator position
+        angular.element(window).bind('resize', function() {
+            $scope.$apply();
+        });
         
         // Initialize
         filterOrders();
