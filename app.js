@@ -91,7 +91,8 @@ angular.module('cofactrApp', ['ngRoute'])
                 controller: 'SupportController'
             })
             .when('/settings', {
-                template: '<div class="page-content"><h1>Settings</h1><p>Settings content goes here</p></div>'
+                templateUrl: 'settings/settings.html',
+                controller: 'SettingsController'
             })
             .otherwise({
                 redirectTo: '/dashboard'
