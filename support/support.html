@@ -1,0 +1,355 @@
+<div class="support-container">
+    <h1 class="page-title">Customer Support</h1>
+    
+    <!-- Support Header -->
+    <div class="support-header">
+        <div class="search-filters">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" 
+                       placeholder="Search tickets..." 
+                       ng-model="searchQuery"
+                       ng-change="filterTickets()"
+                       class="search-input">
+            </div>
+            
+            <div class="filter-dropdown">
+                <select ng-model="selectedStatus" ng-change="filterTickets()" class="filter-select">
+                    <option value="">All Status</option>
+                    <option value="open">Open</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="closed">Closed</option>
+                </select>
+            </div>
+            
+            <div class="priority-dropdown">
+                <select ng-model="selectedPriority" ng-change="filterTickets()" class="filter-select">
+                    <option value="">All Priority</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary" ng-click="createTicket()">
+                <i class="fas fa-plus"></i>
+                New Ticket
+            </button>
+            <button class="btn btn-secondary" ng-click="bulkActions()">
+                <i class="fas fa-tasks"></i>
+                Bulk Actions
+            </button>
+            <button class="btn btn-secondary" ng-click="exportTickets()">
+                <i class="fas fa-download"></i>
+                Export
+            </button>
+        </div>
+    </div>
+    
+    <!-- Support Statistics -->
+    <div class="support-stats">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-ticket-alt"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{totalTickets}}</h3>
+                <p>Total Tickets</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{openTickets}}</h3>
+                <p>Open Tickets</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{resolvedTickets}}</h3>
+                <p>Resolved</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{urgentTickets}}</h3>
+                <p>Urgent</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tickets Table -->
+    <div class="tickets-section">
+        <h3>Support Tickets</h3>
+        <div class="table-wrapper">
+            <table class="tickets-table">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" ng-model="selectAll" ng-change="toggleSelectAll()">
+                        </th>
+                        <th>Ticket ID</th>
+                        <th>Customer</th>
+                        <th>Subject</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Assignee</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="ticket in filteredTickets">
+                        <td>
+                            <input type="checkbox" ng-model="ticket.selected">
+                        </td>
+                        <td>#{{ticket.id}}</td>
+                        <td>
+                            <div class="customer-info">
+                                <div class="customer-avatar">
+                                    <img ng-src="{{ticket.customer.avatar}}" 
+                                         alt="{{ticket.customer.name}}" 
+                                         ng-if="ticket.customer.avatar"
+                                         onerror="this.src='assets/person.svg'">
+                                    <div class="avatar-placeholder" ng-if="!ticket.customer.avatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                </div>
+                                <div class="customer-details">
+                                    <h5>{{ticket.customer.name}}</h5>
+                                    <small>{{ticket.customer.email}}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="ticket-subject">{{ticket.subject}}</td>
+                        <td>
+                            <span class="priority-badge" ng-class="'priority-' + ticket.priority">
+                                {{ticket.priority | capitalize}}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge" ng-class="'status-' + ticket.status">
+                                {{ticket.status | capitalize}}
+                            </span>
+                        </td>
+                        <td>{{ticket.assignee}}</td>
+                        <td>{{ticket.createdDate}}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon" ng-click="viewTicket(ticket)" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon" ng-click="editTicket(ticket)" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon" ng-click="assignTicket(ticket)" title="Assign">
+                                    <i class="fas fa-user-plus"></i>
+                                </button>
+                                <button class="btn-icon btn-danger" ng-click="closeTicket(ticket)" title="Close">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Knowledge Base -->
+    <div class="knowledge-base">
+        <h3>Knowledge Base</h3>
+        <div class="kb-grid">
+            <div class="kb-card" ng-repeat="article in knowledgeBase">
+                <div class="kb-header">
+                    <div class="kb-icon" ng-class="'category-' + article.category">
+                        <i class="fas" ng-class="article.icon"></i>
+                    </div>
+                    <div class="kb-info">
+                        <h4>{{article.title}}</h4>
+                        <p>{{article.description}}</p>
+                    </div>
+                </div>
+                <div class="kb-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Views</span>
+                        <span class="stat-value">{{article.views}}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Helpful</span>
+                        <span class="stat-value">{{article.helpful}}%</span>
+                    </div>
+                </div>
+                <div class="kb-actions">
+                    <button class="btn btn-sm btn-primary" ng-click="viewArticle(article)">
+                        <i class="fas fa-book-open"></i>
+                        Read Article
+                    </button>
+                    <button class="btn btn-sm btn-secondary" ng-click="editArticle(article)">
+                        <i class="fas fa-edit"></i>
+                        Edit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Support Team -->
+    <div class="support-team">
+        <h3>Support Team</h3>
+        <div class="team-grid">
+            <div class="team-member" ng-repeat="member in supportTeam">
+                <div class="member-avatar">
+                    <img ng-src="{{member.avatar}}" 
+                         alt="{{member.name}}" 
+                         ng-if="member.avatar"
+                         onerror="this.src='assets/person.svg'">
+                    <div class="avatar-placeholder" ng-if="!member.avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="status-indicator" ng-class="'status-' + member.status"></div>
+                </div>
+                <div class="member-info">
+                    <h5>{{member.name}}</h5>
+                    <p>{{member.role}}</p>
+                    <div class="member-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Active Tickets</span>
+                            <span class="stat-value">{{member.activeTickets}}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Resolved</span>
+                            <span class="stat-value">{{member.resolvedTickets}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="member-actions">
+                    <button class="btn btn-sm btn-primary" ng-click="contactMember(member)">
+                        <i class="fas fa-comment"></i>
+                        Contact
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAQ Section -->
+    <div class="faq-section">
+        <h3>Frequently Asked Questions</h3>
+        <div class="faq-list">
+            <div class="faq-item" ng-repeat="faq in faqList">
+                <div class="faq-question" ng-click="toggleFaq(faq)">
+                    <h4>{{faq.question}}</h4>
+                    <i class="fas" ng-class="faq.expanded ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                </div>
+                <div class="faq-answer" ng-show="faq.expanded">
+                    <p>{{faq.answer}}</p>
+                    <div class="faq-actions">
+                        <button class="btn btn-sm btn-primary" ng-click="helpfulFaq(faq)">
+                            <i class="fas fa-thumbs-up"></i>
+                            Helpful ({{faq.helpful}})
+                        </button>
+                        <button class="btn btn-sm btn-secondary" ng-click="notHelpfulFaq(faq)">
+                            <i class="fas fa-thumbs-down"></i>
+                            Not Helpful ({{faq.notHelpful}})
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Support Analytics -->
+    <div class="support-analytics">
+        <h3>Support Analytics</h3>
+        <div class="analytics-grid">
+            <div class="analytics-card">
+                <h4>Response Time</h4>
+                <div class="response-time">
+                    <div class="time-metric">
+                        <span class="time-label">Average</span>
+                        <span class="time-value">{{averageResponseTime}}h</span>
+                    </div>
+                    <div class="time-metric">
+                        <span class="time-label">Fastest</span>
+                        <span class="time-value">{{fastestResponseTime}}h</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="analytics-card">
+                <h4>Resolution Rate</h4>
+                <div class="resolution-rate">
+                    <div class="rate-circle">
+                        <span class="rate-value">{{resolutionRate}}%</span>
+                    </div>
+                    <div class="rate-info">
+                        <p>{{resolvedTickets}} of {{totalTickets}} tickets resolved</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="analytics-card">
+                <h4>Customer Satisfaction</h4>
+                <div class="satisfaction-metrics">
+                    <div class="satisfaction-item">
+                        <span class="satisfaction-label">Overall Rating</span>
+                        <div class="rating-stars">
+                            <i class="fas fa-star" ng-repeat="star in getStars(overallRating) track by $index"></i>
+                            <span class="rating-value">{{overallRating}}/5</span>
+                        </div>
+                    </div>
+                    <div class="satisfaction-item">
+                        <span class="satisfaction-label">Total Reviews</span>
+                        <span class="satisfaction-value">{{totalReviews}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <h3>Quick Actions</h3>
+        <div class="actions-grid">
+            <button class="action-card" ng-click="createTicket()">
+                <i class="fas fa-plus-circle"></i>
+                <h4>Create Ticket</h4>
+                <p>Start a new support ticket</p>
+            </button>
+            
+            <button class="action-card" ng-click="viewKnowledgeBase()">
+                <i class="fas fa-book"></i>
+                <h4>Knowledge Base</h4>
+                <p>Browse help articles</p>
+            </button>
+            
+            <button class="action-card" ng-click="contactSupport()">
+                <i class="fas fa-headset"></i>
+                <h4>Live Chat</h4>
+                <p>Chat with support team</p>
+            </button>
+            
+            <button class="action-card" ng-click="scheduleCall()">
+                <i class="fas fa-phone"></i>
+                <h4>Schedule Call</h4>
+                <p>Book a support call</p>
+            </button>
+        </div>
+    </div>
+</div>

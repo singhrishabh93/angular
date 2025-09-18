@@ -75,16 +75,20 @@ angular.module('cofactrApp', ['ngRoute'])
                 controller: 'InventoryController'
             })
             .when('/production', {
-                template: '<div class="page-content"><h1>Production</h1><p>Production content goes here</p></div>'
+                templateUrl: 'production/production.html',
+                controller: 'ProductionController'
             })
             .when('/reports', {
-                template: '<div class="page-content"><h1>Reports</h1><p>Reports content goes here</p></div>'
+                templateUrl: 'reports/reports.html',
+                controller: 'ReportsController'
             })
             .when('/user-access', {
-                template: '<div class="page-content"><h1>User Access</h1><p>User Access content goes here</p></div>'
+                templateUrl: 'user-access/user-access.html',
+                controller: 'UserAccessController'
             })
             .when('/support', {
-                template: '<div class="page-content"><h1>Support</h1><p>Support content goes here</p></div>'
+                templateUrl: 'support/support.html',
+                controller: 'SupportController'
             })
             .when('/settings', {
                 template: '<div class="page-content"><h1>Settings</h1><p>Settings content goes here</p></div>'

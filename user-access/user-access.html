@@ -1,0 +1,322 @@
+<div class="user-access-container">
+    <h1 class="page-title">User Access Management</h1>
+    
+    <!-- User Access Header -->
+    <div class="user-access-header">
+        <div class="search-filters">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" 
+                       placeholder="Search users..." 
+                       ng-model="searchQuery"
+                       ng-change="filterUsers()"
+                       class="search-input">
+            </div>
+            
+            <div class="filter-dropdown">
+                <select ng-model="selectedRole" ng-change="filterUsers()" class="filter-select">
+                    <option value="">All Roles</option>
+                    <option value="admin">Administrator</option>
+                    <option value="manager">Manager</option>
+                    <option value="employee">Employee</option>
+                    <option value="viewer">Viewer</option>
+                </select>
+            </div>
+            
+            <div class="status-dropdown">
+                <select ng-model="selectedStatus" ng-change="filterUsers()" class="filter-select">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="pending">Pending</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary" ng-click="addUser()">
+                <i class="fas fa-user-plus"></i>
+                Add User
+            </button>
+            <button class="btn btn-secondary" ng-click="bulkActions()">
+                <i class="fas fa-tasks"></i>
+                Bulk Actions
+            </button>
+            <button class="btn btn-secondary" ng-click="exportUsers()">
+                <i class="fas fa-download"></i>
+                Export
+            </button>
+        </div>
+    </div>
+    
+    <!-- User Statistics -->
+    <div class="user-stats">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{totalUsers}}</h3>
+                <p>Total Users</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{activeUsers}}</h3>
+                <p>Active Users</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-user-clock"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{pendingUsers}}</h3>
+                <p>Pending Approval</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{adminUsers}}</h3>
+                <p>Administrators</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Users Table -->
+    <div class="users-section">
+        <h3>User Management</h3>
+        <div class="table-wrapper">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" ng-model="selectAll" ng-change="toggleSelectAll()">
+                        </th>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Last Login</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="user in filteredUsers">
+                        <td>
+                            <input type="checkbox" ng-model="user.selected">
+                        </td>
+                        <td>
+                            <div class="user-info">
+                                <div class="user-avatar">
+                                    <img ng-src="{{user.avatar}}" 
+                                         alt="{{user.name}}" 
+                                         ng-if="user.avatar"
+                                         onerror="this.src='assets/person.svg'">
+                                    <div class="avatar-placeholder" ng-if="!user.avatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                </div>
+                                <div class="user-details">
+                                    <h5>{{user.name}}</h5>
+                                    <small>{{user.department}}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{user.email}}</td>
+                        <td>
+                            <span class="role-badge" ng-class="'role-' + user.role">
+                                {{user.role | capitalize}}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge" ng-class="'status-' + user.status">
+                                {{user.status | capitalize}}
+                            </span>
+                        </td>
+                        <td>{{user.lastLogin}}</td>
+                        <td>{{user.createdDate}}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon" ng-click="editUser(user)" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon" ng-click="viewUser(user)" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon" ng-click="toggleUserStatus(user)" 
+                                        ng-class="user.status === 'active' ? 'btn-warning' : 'btn-success'"
+                                        title="{{user.status === 'active' ? 'Deactivate' : 'Activate'}}">
+                                    <i class="fas" ng-class="user.status === 'active' ? 'fa-user-times' : 'fa-user-check'"></i>
+                                </button>
+                                <button class="btn-icon btn-danger" ng-click="deleteUser(user)" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Role Management -->
+    <div class="role-management">
+        <h3>Role Management</h3>
+        <div class="roles-grid">
+            <div class="role-card" ng-repeat="role in roles">
+                <div class="role-header">
+                    <div class="role-icon" ng-class="'role-' + role.name">
+                        <i class="fas" ng-class="role.icon"></i>
+                    </div>
+                    <div class="role-info">
+                        <h4>{{role.name | capitalize}}</h4>
+                        <p>{{role.description}}</p>
+                    </div>
+                </div>
+                <div class="role-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Users</span>
+                        <span class="stat-value">{{role.userCount}}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Permissions</span>
+                        <span class="stat-value">{{role.permissions.length}}</span>
+                    </div>
+                </div>
+                <div class="role-actions">
+                    <button class="btn btn-sm btn-primary" ng-click="editRole(role)">
+                        <i class="fas fa-edit"></i>
+                        Edit Role
+                    </button>
+                    <button class="btn btn-sm btn-secondary" ng-click="viewPermissions(role)">
+                        <i class="fas fa-key"></i>
+                        Permissions
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Permission Matrix -->
+    <div class="permission-matrix">
+        <h3>Permission Matrix</h3>
+        <div class="matrix-container">
+            <table class="permission-table">
+                <thead>
+                    <tr>
+                        <th>Permission</th>
+                        <th ng-repeat="role in roles">{{role.name | capitalize}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="permission in permissions">
+                        <td class="permission-name">{{permission.name}}</td>
+                        <td ng-repeat="role in roles" class="permission-cell">
+                            <i class="fas" ng-class="hasPermission(role, permission) ? 'fa-check text-success' : 'fa-times text-danger'"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="recent-activity">
+        <h3>Recent Activity</h3>
+        <div class="activity-list">
+            <div class="activity-item" ng-repeat="activity in recentActivity">
+                <div class="activity-icon" ng-class="'activity-' + activity.type">
+                    <i class="fas" ng-class="activity.icon"></i>
+                </div>
+                <div class="activity-content">
+                    <h5>{{activity.title}}</h5>
+                    <p>{{activity.description}}</p>
+                    <span class="activity-time">{{activity.timestamp}}</span>
+                </div>
+                <div class="activity-user">
+                    <img ng-src="{{activity.user.avatar}}" 
+                         alt="{{activity.user.name}}" 
+                         class="activity-avatar"
+                         onerror="this.src='assets/person.svg'">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Security Settings -->
+    <div class="security-settings">
+        <h3>Security Settings</h3>
+        <div class="security-grid">
+            <div class="security-card">
+                <h4>Password Policy</h4>
+                <div class="setting-item">
+                    <span class="setting-label">Minimum Length</span>
+                    <span class="setting-value">{{passwordPolicy.minLength}} characters</span>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label">Require Special Characters</span>
+                    <span class="setting-value">{{passwordPolicy.requireSpecial ? 'Yes' : 'No'}}</span>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label">Password Expiry</span>
+                    <span class="setting-value">{{passwordPolicy.expiryDays}} days</span>
+                </div>
+                <button class="btn btn-sm btn-primary" ng-click="editPasswordPolicy()">
+                    <i class="fas fa-edit"></i>
+                    Edit Policy
+                </button>
+            </div>
+            
+            <div class="security-card">
+                <h4>Session Management</h4>
+                <div class="setting-item">
+                    <span class="setting-label">Session Timeout</span>
+                    <span class="setting-value">{{sessionSettings.timeout}} minutes</span>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label">Concurrent Sessions</span>
+                    <span class="setting-value">{{sessionSettings.maxConcurrent}}</span>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label">Remember Me</span>
+                    <span class="setting-value">{{sessionSettings.rememberMe ? 'Enabled' : 'Disabled'}}</span>
+                </div>
+                <button class="btn btn-sm btn-primary" ng-click="editSessionSettings()">
+                    <i class="fas fa-edit"></i>
+                    Edit Settings
+                </button>
+            </div>
+            
+            <div class="security-card">
+                <h4>Two-Factor Authentication</h4>
+                <div class="setting-item">
+                    <span class="setting-label">2FA Required</span>
+                    <span class="setting-value">{{twoFactorAuth.required ? 'Yes' : 'No'}}</span>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label">SMS Enabled</span>
+                    <span class="setting-value">{{twoFactorAuth.smsEnabled ? 'Yes' : 'No'}}</span>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label">App Enabled</span>
+                    <span class="setting-value">{{twoFactorAuth.appEnabled ? 'Yes' : 'No'}}</span>
+                </div>
+                <button class="btn btn-sm btn-primary" ng-click="editTwoFactorAuth()">
+                    <i class="fas fa-edit"></i>
+                    Edit Settings
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

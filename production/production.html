@@ -1,0 +1,186 @@
+<div class="production-container">
+    <h1 class="page-title">Production Management</h1>
+    
+    <!-- Production Overview Cards -->
+    <div class="production-metrics">
+        <div class="metric-card">
+            <div class="metric-icon">
+                <i class="fas fa-industry"></i>
+            </div>
+            <div class="metric-content">
+                <h3>{{totalProducts}}</h3>
+                <p>Total Products</p>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-icon">
+                <i class="fas fa-boxes"></i>
+            </div>
+            <div class="metric-content">
+                <h3>{{totalOrders}}</h3>
+                <p>Orders in Production</p>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="metric-content">
+                <h3>${{totalRevenue | number:2}}</h3>
+                <p>Production Value</p>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="metric-content">
+                <h3>{{averageProductionTime}}h</h3>
+                <p>Avg Production Time</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Production Status Overview -->
+    <div class="production-status">
+        <h3>Production Status Distribution</h3>
+        <div class="status-grid">
+            <div class="status-card" ng-repeat="status in productionStatuses">
+                <div class="status-icon" ng-class="'status-' + status.name.toLowerCase()">
+                    <i class="fas" ng-class="status.icon"></i>
+                </div>
+                <div class="status-info">
+                    <h4>{{status.count}}</h4>
+                    <p>{{status.name}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Production Line Chart -->
+    <div class="production-chart">
+        <h3>Production Volume by Category</h3>
+        <div class="chart-container">
+            <canvas id="productionChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+    
+    <!-- Active Production Orders -->
+    <div class="active-orders">
+        <h3>Active Production Orders</h3>
+        <div class="orders-table-wrapper">
+            <table class="production-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Start Date</th>
+                        <th>Progress</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="order in activeOrders">
+                        <td>#{{order.id}}</td>
+                        <td>
+                            <div class="product-info">
+                                <img ng-src="{{getProductImage(order.products[0].productId)}}" 
+                                     alt="Product" 
+                                     class="product-thumb"
+                                     onerror="this.src='https://via.placeholder.com/40x40?text=No+Image'">
+                                <span>{{getProductName(order.products[0].productId)}}</span>
+                            </div>
+                        </td>
+                        <td>{{order.products[0].quantity}}</td>
+                        <td>
+                            <span class="status-badge" ng-class="getProductionStatusClass(order.orderStatus)">
+                                {{order.orderStatus}}
+                            </span>
+                        </td>
+                        <td>{{order.orderDate}}</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" ng-style="{'width': getProgressPercentage(order.orderStatus) + '%'}"></div>
+                            </div>
+                            <span class="progress-text">{{getProgressPercentage(order.orderStatus)}}%</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" ng-click="updateProductionStatus(order)">
+                                <i class="fas fa-edit"></i>
+                                Update
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Production Efficiency Metrics -->
+    <div class="efficiency-metrics">
+        <div class="efficiency-card">
+            <h4>Production Efficiency</h4>
+            <div class="efficiency-chart">
+                <canvas id="efficiencyChart" width="300" height="150"></canvas>
+            </div>
+        </div>
+        
+        <div class="efficiency-card">
+            <h4>Quality Metrics</h4>
+            <div class="quality-stats">
+                <div class="quality-item">
+                    <span class="quality-label">Defect Rate</span>
+                    <span class="quality-value">{{defectRate}}%</span>
+                </div>
+                <div class="quality-item">
+                    <span class="quality-label">Quality Score</span>
+                    <span class="quality-value">{{qualityScore}}/100</span>
+                </div>
+                <div class="quality-item">
+                    <span class="quality-label">Rework Rate</span>
+                    <span class="quality-value">{{reworkRate}}%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="efficiency-card">
+            <h4>Resource Utilization</h4>
+            <div class="resource-stats">
+                <div class="resource-item">
+                    <span class="resource-label">Machine Utilization</span>
+                    <div class="resource-bar">
+                        <div class="resource-fill" ng-style="{'width': machineUtilization + '%'}"></div>
+                    </div>
+                    <span class="resource-value">{{machineUtilization}}%</span>
+                </div>
+                <div class="resource-item">
+                    <span class="resource-label">Workforce Efficiency</span>
+                    <div class="resource-bar">
+                        <div class="resource-fill" ng-style="{'width': workforceEfficiency + '%'}"></div>
+                    </div>
+                    <span class="resource-value">{{workforceEfficiency}}%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Production Schedule -->
+    <div class="production-schedule">
+        <h3>Production Schedule</h3>
+        <div class="schedule-timeline">
+            <div class="timeline-item" ng-repeat="schedule in productionSchedule">
+                <div class="timeline-marker" ng-class="'status-' + schedule.status.toLowerCase()"></div>
+                <div class="timeline-content">
+                    <h5>{{schedule.title}}</h5>
+                    <p>{{schedule.description}}</p>
+                    <span class="timeline-date">{{schedule.date}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

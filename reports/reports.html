@@ -1,0 +1,287 @@
+<div class="reports-container">
+    <h1 class="page-title">Analytics & Reports</h1>
+    
+    <!-- Report Filters -->
+    <div class="report-filters">
+        <div class="filter-group">
+            <label>Date Range</label>
+            <select ng-model="selectedDateRange" ng-change="updateReports()" class="filter-select">
+                <option value="7">Last 7 Days</option>
+                <option value="30">Last 30 Days</option>
+                <option value="90">Last 90 Days</option>
+                <option value="365">Last Year</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label>Report Type</label>
+            <select ng-model="selectedReportType" ng-change="updateReports()" class="filter-select">
+                <option value="sales">Sales Report</option>
+                <option value="inventory">Inventory Report</option>
+                <option value="production">Production Report</option>
+                <option value="financial">Financial Report</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <button class="btn btn-primary" ng-click="exportReport()">
+                <i class="fas fa-download"></i>
+                Export Report
+            </button>
+        </div>
+    </div>
+    
+    <!-- Key Performance Indicators -->
+    <div class="kpi-metrics">
+        <div class="kpi-card">
+            <div class="kpi-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>${{totalRevenue | number:2}}</h3>
+                <p>Total Revenue</p>
+                <span class="kpi-change positive">+{{revenueGrowth}}%</span>
+            </div>
+        </div>
+        
+        <div class="kpi-card">
+            <div class="kpi-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>{{totalOrders}}</h3>
+                <p>Total Orders</p>
+                <span class="kpi-change positive">+{{orderGrowth}}%</span>
+            </div>
+        </div>
+        
+        <div class="kpi-card">
+            <div class="kpi-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>{{totalCustomers}}</h3>
+                <p>Active Customers</p>
+                <span class="kpi-change positive">+{{customerGrowth}}%</span>
+            </div>
+        </div>
+        
+        <div class="kpi-card">
+            <div class="kpi-icon">
+                <i class="fas fa-box"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>{{totalProducts}}</h3>
+                <p>Products Sold</p>
+                <span class="kpi-change positive">+{{productGrowth}}%</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts Section -->
+    <div class="charts-section">
+        <div class="chart-container">
+            <h3>Revenue Trend</h3>
+            <div class="chart-wrapper">
+                <canvas id="revenueChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <h3>Order Status Distribution</h3>
+            <div class="chart-wrapper">
+                <canvas id="orderStatusChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sales Analytics -->
+    <div class="sales-analytics">
+        <h3>Sales Analytics</h3>
+        <div class="analytics-grid">
+            <div class="analytics-card">
+                <h4>Top Selling Products</h4>
+                <div class="product-list">
+                    <div class="product-item" ng-repeat="product in topProducts">
+                        <div class="product-info">
+                            <img ng-src="{{product.image}}" alt="{{product.name}}" class="product-thumb">
+                            <div class="product-details">
+                                <h5>{{product.name}}</h5>
+                                <p>{{product.category}}</p>
+                            </div>
+                        </div>
+                        <div class="product-stats">
+                            <span class="sales-count">{{product.sales}} sales</span>
+                            <span class="revenue">${{product.revenue | number:2}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="analytics-card">
+                <h4>Customer Segments</h4>
+                <div class="segment-list">
+                    <div class="segment-item" ng-repeat="segment in customerSegments">
+                        <div class="segment-info">
+                            <span class="segment-name">{{segment.name}}</span>
+                            <span class="segment-count">{{segment.count}} customers</span>
+                        </div>
+                        <div class="segment-bar">
+                            <div class="segment-fill" ng-style="{'width': segment.percentage + '%'}"></div>
+                        </div>
+                        <span class="segment-percentage">{{segment.percentage}}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Financial Reports -->
+    <div class="financial-reports">
+        <h3>Financial Summary</h3>
+        <div class="financial-grid">
+            <div class="financial-card">
+                <h4>Profit & Loss</h4>
+                <div class="financial-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">Gross Revenue</span>
+                        <span class="metric-value positive">${{grossRevenue | number:2}}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Cost of Goods</span>
+                        <span class="metric-value negative">-${{costOfGoods | number:2}}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Operating Expenses</span>
+                        <span class="metric-value negative">-${{operatingExpenses | number:2}}</span>
+                    </div>
+                    <div class="metric-row total">
+                        <span class="metric-label">Net Profit</span>
+                        <span class="metric-value" ng-class="netProfit >= 0 ? 'positive' : 'negative'">${{netProfit | number:2}}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="financial-card">
+                <h4>Cash Flow</h4>
+                <div class="cash-flow">
+                    <div class="flow-item">
+                        <span class="flow-label">Cash In</span>
+                        <span class="flow-value positive">${{cashIn | number:2}}</span>
+                    </div>
+                    <div class="flow-item">
+                        <span class="flow-label">Cash Out</span>
+                        <span class="flow-value negative">${{cashOut | number:2}}</span>
+                    </div>
+                    <div class="flow-item total">
+                        <span class="flow-label">Net Cash Flow</span>
+                        <span class="flow-value" ng-class="netCashFlow >= 0 ? 'positive' : 'negative'">${{netCashFlow | number:2}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Performance Metrics -->
+    <div class="performance-metrics">
+        <h3>Performance Metrics</h3>
+        <div class="performance-grid">
+            <div class="performance-card">
+                <h4>Conversion Rates</h4>
+                <div class="conversion-metrics">
+                    <div class="conversion-item">
+                        <span class="conversion-label">Website Visitors</span>
+                        <span class="conversion-value">{{websiteVisitors}}</span>
+                    </div>
+                    <div class="conversion-item">
+                        <span class="conversion-label">Conversion Rate</span>
+                        <span class="conversion-value">{{conversionRate}}%</span>
+                    </div>
+                    <div class="conversion-item">
+                        <span class="conversion-label">Average Order Value</span>
+                        <span class="conversion-value">${{averageOrderValue | number:2}}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="performance-card">
+                <h4>Customer Satisfaction</h4>
+                <div class="satisfaction-metrics">
+                    <div class="satisfaction-item">
+                        <span class="satisfaction-label">Overall Rating</span>
+                        <div class="rating-stars">
+                            <i class="fas fa-star" ng-repeat="star in getStars(overallRating) track by $index"></i>
+                            <span class="rating-value">{{overallRating}}/5</span>
+                        </div>
+                    </div>
+                    <div class="satisfaction-item">
+                        <span class="satisfaction-label">Customer Reviews</span>
+                        <span class="satisfaction-value">{{totalReviews}}</span>
+                    </div>
+                    <div class="satisfaction-item">
+                        <span class="satisfaction-label">Return Rate</span>
+                        <span class="satisfaction-value">{{returnRate}}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Detailed Reports Table -->
+    <div class="reports-table">
+        <h3>Detailed Reports</h3>
+        <div class="table-wrapper">
+            <table class="reports-table-content">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Revenue</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="report in detailedReports">
+                        <td>{{report.date}}</td>
+                        <td>#{{report.orderId}}</td>
+                        <td>{{report.customer}}</td>
+                        <td>{{report.product}}</td>
+                        <td>{{report.quantity}}</td>
+                        <td>${{report.revenue | number:2}}</td>
+                        <td>
+                            <span class="status-badge" ng-class="getStatusClass(report.status)">
+                                {{report.status}}
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Export Options -->
+    <div class="export-options">
+        <h3>Export Options</h3>
+        <div class="export-buttons">
+            <button class="btn btn-primary" ng-click="exportToPDF()">
+                <i class="fas fa-file-pdf"></i>
+                Export PDF
+            </button>
+            <button class="btn btn-secondary" ng-click="exportToExcel()">
+                <i class="fas fa-file-excel"></i>
+                Export Excel
+            </button>
+            <button class="btn btn-secondary" ng-click="exportToCSV()">
+                <i class="fas fa-file-csv"></i>
+                Export CSV
+            </button>
+            <button class="btn btn-secondary" ng-click="scheduleReport()">
+                <i class="fas fa-clock"></i>
+                Schedule Report
+            </button>
+        </div>
+    </div>
+</div>

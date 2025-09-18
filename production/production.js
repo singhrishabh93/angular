@@ -1,0 +1,301 @@
+// Production Controller
+angular.module('cofactrApp')
+    .controller('ProductionController', function($scope, $http) {
+        // Initialize production data
+        $scope.totalProducts = 0;
+        $scope.totalOrders = 0;
+        $scope.totalRevenue = 0;
+        $scope.averageProductionTime = 0;
+        $scope.activeOrders = [];
+        $scope.products = [];
+        $scope.orders = [];
+        $scope.productionStatuses = [];
+        $scope.defectRate = 0;
+        $scope.qualityScore = 0;
+        $scope.reworkRate = 0;
+        $scope.machineUtilization = 0;
+        $scope.workforceEfficiency = 0;
+        $scope.productionSchedule = [];
+        
+        // Load data from JSON file
+        $scope.loadData = function() {
+            $http.get('db/db.json')
+                .then(function(response) {
+                    var data = response.data;
+                    $scope.products = data.ProductsList || [];
+                    $scope.orders = data.OrdersList || [];
+                    
+                    // Calculate production metrics
+                    $scope.calculateProductionMetrics();
+                    $scope.getActiveOrders();
+                    $scope.calculateProductionStatuses();
+                    $scope.generateProductionSchedule();
+                    $scope.initializeCharts();
+                })
+                .catch(function(error) {
+                    console.error('Error loading production data:', error);
+                });
+        };
+        
+        // Calculate production metrics
+        $scope.calculateProductionMetrics = function() {
+            $scope.totalProducts = $scope.products.length;
+            $scope.totalOrders = $scope.orders.length;
+            
+            // Calculate total revenue from orders
+            $scope.totalRevenue = $scope.orders.reduce(function(sum, order) {
+                return sum + (order.totalPrice || 0);
+            }, 0);
+            
+            // Calculate average production time (simulated based on order complexity)
+            var totalProductionTime = $scope.orders.reduce(function(sum, order) {
+                var complexity = order.products ? order.products.length : 1;
+                return sum + (complexity * 2); // 2 hours per product
+            }, 0);
+            $scope.averageProductionTime = $scope.totalOrders > 0 ? 
+                Math.round(totalProductionTime / $scope.totalOrders) : 0;
+            
+            // Calculate quality metrics (simulated)
+            $scope.defectRate = Math.round(Math.random() * 5 + 1); // 1-6%
+            $scope.qualityScore = Math.round(Math.random() * 20 + 80); // 80-100
+            $scope.reworkRate = Math.round(Math.random() * 3 + 1); // 1-4%
+            
+            // Calculate resource utilization (simulated)
+            $scope.machineUtilization = Math.round(Math.random() * 30 + 70); // 70-100%
+            $scope.workforceEfficiency = Math.round(Math.random() * 25 + 75); // 75-100%
+        };
+        
+        // Get active production orders
+        $scope.getActiveOrders = function() {
+            $scope.activeOrders = $scope.orders.filter(function(order) {
+                return order.orderStatus !== 'Delivered';
+            }).slice(0, 10); // Show top 10 active orders
+        };
+        
+        // Calculate production status distribution
+        $scope.calculateProductionStatuses = function() {
+            var statusCounts = {};
+            $scope.orders.forEach(function(order) {
+                statusCounts[order.orderStatus] = (statusCounts[order.orderStatus] || 0) + 1;
+            });
+            
+            $scope.productionStatuses = [
+                {
+                    name: 'Processing',
+                    count: statusCounts['Processing'] || 0,
+                    icon: 'fa-cog'
+                },
+                {
+                    name: 'Confirmed',
+                    count: statusCounts['Confirmed'] || 0,
+                    icon: 'fa-check-circle'
+                },
+                {
+                    name: 'Shipped',
+                    count: statusCounts['Shipped'] || 0,
+                    icon: 'fa-shipping-fast'
+                },
+                {
+                    name: 'Delivered',
+                    count: statusCounts['Delivered'] || 0,
+                    icon: 'fa-check-double'
+                }
+            ];
+        };
+        
+        // Generate production schedule
+        $scope.generateProductionSchedule = function() {
+            $scope.productionSchedule = [
+                {
+                    title: 'Order #5004 - Nike T-shirt',
+                    description: 'Production of 3 units',
+                    date: '2025-01-15',
+                    status: 'in-progress'
+                },
+                {
+                    title: 'Order #5005 - Adidas Sneakers',
+                    description: 'Quality control and packaging',
+                    date: '2025-01-16',
+                    status: 'scheduled'
+                },
+                {
+                    title: 'Order #5006 - Apple Watch',
+                    description: 'Final assembly and testing',
+                    date: '2025-01-17',
+                    status: 'pending'
+                },
+                {
+                    title: 'Order #5007 - Sony Headphones',
+                    description: 'Component preparation',
+                    date: '2025-01-18',
+                    status: 'pending'
+                }
+            ];
+        };
+        
+        // Get product name by ID
+        $scope.getProductName = function(productId) {
+            var product = $scope.products.find(function(p) {
+                return p.id === productId;
+            });
+            return product ? product.name : 'Unknown Product';
+        };
+        
+        // Get product image by ID
+        $scope.getProductImage = function(productId) {
+            var product = $scope.products.find(function(p) {
+                return p.id === productId;
+            });
+            return product ? product.ImageURL : '';
+        };
+        
+        // Get production status class for styling
+        $scope.getProductionStatusClass = function(status) {
+            switch(status) {
+                case 'Delivered': return 'status-delivered';
+                case 'Shipped': return 'status-shipped';
+                case 'Processing': return 'status-processing';
+                case 'Confirmed': return 'status-confirmed';
+                default: return 'status-default';
+            }
+        };
+        
+        // Get progress percentage based on status
+        $scope.getProgressPercentage = function(status) {
+            switch(status) {
+                case 'Processing': return 25;
+                case 'Confirmed': return 50;
+                case 'Shipped': return 75;
+                case 'Delivered': return 100;
+                default: return 0;
+            }
+        };
+        
+        // Update production status
+        $scope.updateProductionStatus = function(order) {
+            // Simulate status update
+            var statuses = ['Processing', 'Confirmed', 'Shipped', 'Delivered'];
+            var currentIndex = statuses.indexOf(order.orderStatus);
+            if (currentIndex < statuses.length - 1) {
+                order.orderStatus = statuses[currentIndex + 1];
+                $scope.calculateProductionStatuses();
+            }
+        };
+        
+        // Initialize charts
+        $scope.initializeCharts = function() {
+            // Production chart
+            var productionCtx = document.getElementById('productionChart');
+            if (productionCtx) {
+                $scope.createProductionChart(productionCtx);
+            }
+            
+            // Efficiency chart
+            var efficiencyCtx = document.getElementById('efficiencyChart');
+            if (efficiencyCtx) {
+                $scope.createEfficiencyChart(efficiencyCtx);
+            }
+        };
+        
+        // Create production volume chart
+        $scope.createProductionChart = function(ctx) {
+            var canvas = ctx;
+            var context = canvas.getContext('2d');
+            
+            // Clear canvas
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Calculate production by category
+            var categoryCounts = {};
+            $scope.orders.forEach(function(order) {
+                if (order.products) {
+                    order.products.forEach(function(item) {
+                        var product = $scope.products.find(function(p) {
+                            return p.id === item.productId;
+                        });
+                        if (product) {
+                            categoryCounts[product.Category] = (categoryCounts[product.Category] || 0) + item.quantity;
+                        }
+                    });
+                }
+            });
+            
+            var categories = Object.keys(categoryCounts);
+            var counts = Object.values(categoryCounts);
+            var maxCount = Math.max(...counts);
+            
+            // Draw bar chart
+            var barWidth = canvas.width / categories.length;
+            var colors = ['#4CAF50', '#2196F3', '#FF9800', '#F44336', '#9C27B0'];
+            
+            categories.forEach(function(category, index) {
+                var barHeight = (categoryCounts[category] / maxCount) * (canvas.height - 60);
+                var x = index * barWidth + 10;
+                var y = canvas.height - barHeight - 30;
+                
+                // Draw bar
+                context.fillStyle = colors[index % colors.length];
+                context.fillRect(x, y, barWidth - 20, barHeight);
+                
+                // Draw category label
+                context.fillStyle = '#333';
+                context.font = '10px Arial';
+                context.textAlign = 'center';
+                context.save();
+                context.translate(x + barWidth/2, canvas.height - 10);
+                context.rotate(-Math.PI/4);
+                context.fillText(category, 0, 0);
+                context.restore();
+                
+                // Draw count label
+                context.fillStyle = '#333';
+                context.font = '8px Arial';
+                context.textAlign = 'center';
+                context.fillText(categoryCounts[category], x + barWidth/2, y - 5);
+            });
+        };
+        
+        // Create efficiency chart
+        $scope.createEfficiencyChart = function(ctx) {
+            var canvas = ctx;
+            var context = canvas.getContext('2d');
+            
+            // Clear canvas
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw efficiency gauge
+            var centerX = canvas.width / 2;
+            var centerY = canvas.height / 2;
+            var radius = Math.min(centerX, centerY) - 20;
+            
+            // Draw background circle
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            context.strokeStyle = '#E0E0E0';
+            context.lineWidth = 20;
+            context.stroke();
+            
+            // Draw efficiency arc
+            var efficiency = $scope.machineUtilization;
+            var startAngle = -Math.PI / 2;
+            var endAngle = startAngle + (efficiency / 100) * 2 * Math.PI;
+            
+            context.beginPath();
+            context.arc(centerX, centerY, radius, startAngle, endAngle);
+            context.strokeStyle = efficiency > 80 ? '#4CAF50' : efficiency > 60 ? '#FF9800' : '#F44336';
+            context.lineWidth = 20;
+            context.stroke();
+            
+            // Draw efficiency text
+            context.fillStyle = '#333';
+            context.font = 'bold 16px Arial';
+            context.textAlign = 'center';
+            context.fillText(efficiency + '%', centerX, centerY + 5);
+            
+            context.font = '12px Arial';
+            context.fillText('Efficiency', centerX, centerY + 25);
+        };
+        
+        // Initialize production data on load
+        $scope.loadData();
+    });
